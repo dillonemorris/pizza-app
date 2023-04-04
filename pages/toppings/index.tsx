@@ -1,18 +1,23 @@
 import Head from 'next/head'
-import prisma from '../lib/prisma'
+import prisma from '../../lib/prisma'
 import { GetStaticProps } from 'next'
 
-export default function Home(props) {
-  console.log(props)
+export default function Toppings({ toppings }) {
   return (
     <div>
       <Head>
-        <title>Pizza App</title>
+        <title>Hi Owner!</title>
         <meta name="description" content="Strongmind Fullstack exercise" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main></main>
+      <main>
+        <ul>
+          {toppings.map((topping) => (
+            <li>{topping.name}</li>
+          ))}
+        </ul>
+      </main>
     </div>
   )
 }
