@@ -1,13 +1,22 @@
 import './globals.css'
+import { SWRConfig } from 'swr'
 import { BuildingStorefrontIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <SWRConfig
+      value={{
+        refreshInterval: 3000,
+        fetcher: (resource, init) =>
+          fetch(resource, init).then((res) => res.json()),
+      }}
+    >
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </SWRConfig>
   )
 }
 
