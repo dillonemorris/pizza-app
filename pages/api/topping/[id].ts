@@ -1,5 +1,7 @@
 import prisma from '../../../lib/prisma'
 
+// PATCH /api/topping/:id
+// DELETE /api/topping/:id
 export default async function handle(req, res) {
   const { id } = req.query
   const { name } = req.body

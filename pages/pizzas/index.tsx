@@ -1,8 +1,11 @@
-import useSWR, { useSWRConfig } from 'swr'
-import Head from 'next/head'
 import { useState } from 'react'
-import { Modal } from '../../components'
+import Head from 'next/head'
+import useSWR, { useSWRConfig } from 'swr'
 import { Dialog } from '@headlessui/react'
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import { Modal } from '../../components'
+import { Pizza } from '../../components/types'
+import { CreatePizzaModal } from './CreatePizzaModal'
 
 export default function Pizzas() {
   const [isOpen, setIsOpen] = useState(false)
@@ -24,142 +27,14 @@ export default function Pizzas() {
         >
           Create new pizza
         </button>
-        <List />
+        <PizzaList />
       </div>
       <CreatePizzaModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </div>
   )
 }
 
-const CreatePizzaModal = ({ isOpen, onClose }) => {
-  const { mutate } = useSWRConfig()
-  const [name, setName] = useState('')
-  const [error, setError] = useState('')
-  const { data, isLoading } = useSWR('/api/topping')
-  const [toppingsMap, setToppingsMap] = useState({})
-  const toppings = Object.keys(toppingsMap).filter((t) => !!toppingsMap[t])
-
-  const handleNewPizzaSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault()
-    setError('')
-
-    if (!name) {
-      setError('Input cannot be blank')
-      return
-    }
-
-    try {
-      const body = { name, toppings }
-
-      const response = await fetch('/api/pizza', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-
-      await mutate('/api/pizza')
-    } catch (err) {
-      setError(err.message)
-      console.error(err)
-    }
-  }
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="mt-3 text-center sm:mt-5">
-        <Dialog.Title
-          as="h3"
-          className="text-base font-semibold leading-6 text-gray-900"
-        >
-          Create new pizza
-        </Dialog.Title>
-      </div>
-      <div className="my-8 flex-col">
-        <label
-          htmlFor="pizza"
-          className="block text-sm font-medium leading-6 text-gray-900"
-        >
-          Pizza name
-        </label>
-        <div className="mt-2 relative flex flex-grow items-stretch focus-within:z-10">
-          <input
-            type="text"
-            placeholder="When the moon hits your eye..."
-            value={name}
-            name="pizza"
-            id="pizza"
-            className="block w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-400 sm:text-sm sm:leading-6 outline-none"
-            onChange={(event) => {
-              setError('')
-              setName(event.target.value)
-            }}
-          />
-        </div>
-        <p className="mt-2 text-sm text-red-600" id="email-error">
-          {error}
-        </p>
-
-        {!isLoading && !!data ? (
-          <fieldset className="mt-8 mb-12">
-            <legend className="text-base font-semibold leading-6 text-gray-900">
-              Toppings
-            </legend>
-            <div className="mt-4 divide-y divide-gray-200 border-b border-t border-gray-200">
-              {data.toppings.map((topping) => (
-                <div
-                  key={topping.id}
-                  className="relative flex items-start py-4"
-                >
-                  <div className="min-w-0 flex-1 text-sm leading-6">
-                    <label
-                      htmlFor={`topping-${topping.id}`}
-                      className="select-none font-medium text-gray-900"
-                    >
-                      {topping.name}
-                    </label>
-                  </div>
-                  <div className="ml-3 flex h-6 items-center">
-                    <input
-                      id={`topping-${topping.id}`}
-                      name={topping.name}
-                      type="checkbox"
-                      onChange={(e) => {
-                        setToppingsMap((toppings) => ({
-                          ...toppings,
-                          [e.target.name]: e.target.checked,
-                        }))
-                      }}
-                      className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </fieldset>
-        ) : null}
-      </div>
-
-      <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-        <button
-          type="button"
-          className="inline-flex w-full justify-center rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600 sm:col-start-2"
-          onClick={handleNewPizzaSubmit}
-        >
-          Save
-        </button>
-        <button
-          type="button"
-          className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
-          onClick={onClose}
-        >
-          Cancel
-        </button>
-      </div>
-    </Modal>
-  )
-}
-
-const List = () => {
+const PizzaList = () => {
   const { data, isLoading } = useSWR('/api/pizza')
 
   if (isLoading) {
@@ -177,25 +52,148 @@ const List = () => {
                   {pizza.name}
                 </p>
                 <p className="truncate text-sm text-gray-500">
-                  {pizza.toppings.length} toppings
+                  {pizza.toppings.length} topping
+                  {pizza.toppings.length > 1 ? 's' : null}
                 </p>
               </div>
-              <a
-                href="#"
-                className="inline-flex items-center rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                Edit
-              </a>
-              <a
-                href="#"
-                className="inline-flex items-center rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-100"
-              >
-                Delete
-              </a>
+              <EditPizzaButton pizza={pizza} />
+              <DeletePizzaButton pizza={pizza} />
             </div>
           </li>
         ))}
       </ul>
     </div>
+  )
+}
+
+type EditPizzaButtonProps = {
+  pizza: Pizza
+}
+
+const EditPizzaButton = ({ pizza }: EditPizzaButtonProps) => {
+  const [isOpen, setIsOpen] = useState(false)
+  return (
+    <>
+      <button
+        onClick={() => setIsOpen(true)}
+        className="inline-flex items-center rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+      >
+        Edit
+      </button>
+      <EditPizzaModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        pizza={pizza}
+      />
+    </>
+  )
+}
+
+type EditPizzaModalProps = {
+  pizza: Pizza
+  isOpen: boolean
+  onClose: () => void
+}
+
+const EditPizzaModal = ({ isOpen, onClose, pizza }: EditPizzaModalProps) => {
+  return (
+    <CreatePizzaModal
+      isEditing
+      isOpen={isOpen}
+      onClose={onClose}
+      initialPizza={pizza}
+    />
+  )
+}
+
+const DeletePizzaButton = ({ pizza }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  return (
+    <>
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="inline-flex items-center rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-100"
+      >
+        Delete
+      </button>
+      <DeletePizzaModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        pizza={pizza}
+      />
+    </>
+  )
+}
+
+type DeletePizzaModalProps = {
+  pizza: Pizza
+  isOpen: boolean
+  onClose: () => void
+}
+
+const DeletePizzaModal = ({
+  isOpen,
+  onClose,
+  pizza,
+}: DeletePizzaModalProps) => {
+  const { mutate } = useSWRConfig()
+
+  const handleDelete = async (e: React.SyntheticEvent) => {
+    e.preventDefault()
+
+    try {
+      await fetch(`/api/pizza/${pizza.id}`, {
+        method: 'DELETE',
+      })
+
+      await mutate('/api/pizza')
+      onClose()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="sm:flex sm:items-start">
+        <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+          <ExclamationTriangleIcon
+            className="h-6 w-6 text-red-600"
+            aria-hidden="true"
+          />
+        </div>
+        <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+          <Dialog.Title
+            as="h3"
+            className="text-base font-semibold leading-6 text-gray-900"
+          >
+            Delete Pizza
+          </Dialog.Title>
+          <div className="mt-2">
+            <p className="text-sm text-gray-500">
+              Are you sure you want to delete {pizza.name}? This action cannot
+              be undone.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+        <button
+          type="button"
+          className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+          onClick={handleDelete}
+        >
+          Delete
+        </button>
+        <button
+          type="button"
+          className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+      </div>
+    </Modal>
   )
 }

@@ -1,13 +1,15 @@
 import prisma from '../../../lib/prisma'
 
+// GET /api/topping
+// POST /api/topping
 export default async function handle(req, res) {
   const { name } = req.body
 
   if (req.method === 'GET') {
     const toppings = await prisma.topping.findMany({
       select: {
-        name: true,
         id: true,
+        name: true,
       },
     })
 
@@ -31,8 +33,8 @@ export default async function handle(req, res) {
       const result = await prisma.topping.create({
         data: { name },
         select: {
-          name: true,
           id: true,
+          name: true,
         },
       })
 

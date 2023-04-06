@@ -1,10 +1,15 @@
+import { useState } from 'react'
 import { useSWRConfig } from 'swr'
-import { Modal } from '../../components'
 import { Dialog } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
+import { Modal } from '../../components'
+import { Topping } from '../../components/types'
 
-export const ToppingListItem = ({ topping }) => {
+type ToppingListItemProps = {
+  topping: Topping
+}
+
+export const ToppingListItem = ({ topping }: ToppingListItemProps) => {
   return (
     <li key={topping.id} className="py-4">
       <div className="flex items-center space-x-4">
@@ -13,27 +18,31 @@ export const ToppingListItem = ({ topping }) => {
             {topping.name}
           </p>
         </div>
-        <EditButton topping={topping} />
-        <DeleteButton topping={topping} />
+        <EditToppingButton topping={topping} />
+        <DeleteToppingButton topping={topping} />
       </div>
     </li>
   )
 }
 
-const DeleteButton = ({ topping }) => {
-  const [isOpen, setIsOpen] = useState(false)
+type DeleteToppingButtonProps = {
+  topping: Topping
+}
+
+const DeleteToppingButton = ({ topping }: DeleteToppingButtonProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
   return (
     <>
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsModalOpen(true)}
         className="inline-flex items-center rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-100"
       >
         Delete
       </button>
       <DeleteToppingModal
         topping={topping}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </>
   )
@@ -42,7 +51,7 @@ const DeleteButton = ({ topping }) => {
 type DeleteToppingModalProps = {
   isOpen: boolean
   onClose: () => void
-  topping: { name: string; id: string }
+  topping: Topping
 }
 
 const DeleteToppingModal = ({
@@ -66,6 +75,7 @@ const DeleteToppingModal = ({
       console.error(err)
     }
   }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="sm:flex sm:items-start">
@@ -110,20 +120,24 @@ const DeleteToppingModal = ({
   )
 }
 
-const EditButton = ({ topping }) => {
-  const [isOpen, setIsOpen] = useState(false)
+type EditToppingButtonProps = {
+  topping: Topping
+}
+
+const EditToppingButton = ({ topping }: EditToppingButtonProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
   return (
     <>
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsModalOpen(true)}
         className="inline-flex items-center rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
       >
         Edit
       </button>
       <EditToppingModal
         topping={topping}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </>
   )
@@ -132,7 +146,7 @@ const EditButton = ({ topping }) => {
 type EditToppingModalProps = {
   isOpen: boolean
   onClose: () => void
-  topping: { name: string; id: string }
+  topping: Topping
 }
 
 const EditToppingModal = ({

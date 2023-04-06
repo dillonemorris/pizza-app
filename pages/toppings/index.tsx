@@ -17,7 +17,7 @@ export default function Toppings() {
 
       <NewToppingInput />
 
-      {isLoading ? null : <ToppingsList toppings={data.toppings} />}
+      {isLoading ? null : <ToppingList toppings={data.toppings} />}
     </div>
   )
 }
@@ -98,7 +98,7 @@ const NewToppingInput = () => {
   )
 }
 
-const ToppingsList = () => {
+const ToppingList = () => {
   const { data, isLoading } = useSWR('/api/topping')
 
   if (isLoading) {
