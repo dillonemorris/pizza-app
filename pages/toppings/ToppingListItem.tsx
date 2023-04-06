@@ -39,7 +39,17 @@ const DeleteButton = ({ topping }) => {
   )
 }
 
-const DeleteToppingModal = ({ isOpen, onClose, topping }) => {
+type DeleteToppingModalProps = {
+  isOpen: boolean
+  onClose: () => void
+  topping: { name: string; id: string }
+}
+
+const DeleteToppingModal = ({
+  isOpen,
+  onClose,
+  topping,
+}: DeleteToppingModalProps) => {
   const { mutate } = useSWRConfig()
 
   const handleDelete = async (e: React.SyntheticEvent) => {

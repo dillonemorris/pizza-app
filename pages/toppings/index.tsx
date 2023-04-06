@@ -98,12 +98,18 @@ const NewToppingInput = () => {
   )
 }
 
-const ToppingsList = ({ toppings }) => {
+const ToppingsList = () => {
+  const { data, isLoading } = useSWR('/api/topping')
+
+  if (isLoading) {
+    return null
+  }
+
   return (
     <div className="mt-12 px-1">
       <ul role="list" className="-my-5 divide-y divide-gray-200">
-        {toppings.map((topping) => (
-          <ToppingListItem topping={topping} />
+        {data.toppings.map((topping) => (
+          <ToppingListItem key={topping.id} topping={topping} />
         ))}
       </ul>
     </div>

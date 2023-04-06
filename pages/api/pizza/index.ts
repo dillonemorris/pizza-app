@@ -1,37 +1,39 @@
 import prisma from '../../../lib/prisma'
 
 export default async function handle(req, res) {
-  const { name } = req.body
+  const { name, toppings } = req.body
 
   if (req.method === 'GET') {
-    const toppings = await prisma.topping.findMany({
+    const pizzas = await prisma.pizza.findMany({
       select: {
         name: true,
+        toppings: true,
         id: true,
       },
     })
 
-    res.json({ toppings })
+    res.json({ pizzas })
   }
 
-  const existingTopping = await prisma.topping.findFirst({
+  const existingPizza = await prisma.pizza.findFirst({
     where: {
       name,
     },
   })
 
   if (req.method === 'POST') {
-    try {
-      if (!!existingTopping) {
-        throw new Error(
-          `Topping "${name}" already exists. Cannot create duplicate toppings`
-        )
-      }
+    if (!!existingPizza) {
+      throw new Error(
+        `Pizza "${name}" already exists. Please input a unique pizza name.`
+      )
+    }
 
-      const result = await prisma.topping.create({
-        data: { name },
+    try {
+      const result = await prisma.pizza.create({
+        data: { name, toppings },
         select: {
           name: true,
+          toppings: true,
           id: true,
         },
       })
