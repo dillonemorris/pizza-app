@@ -1,4 +1,4 @@
-import prisma from '../../../lib/prisma'
+import { deleteTopping, isExistingTopping, updateTopping } from './db-functions'
 
 // PATCH /api/topping/:id
 // DELETE /api/topping/:id
@@ -7,23 +7,16 @@ export default async function handle(req, res) {
   const { name } = req.body
 
   if (req.method === 'PATCH') {
-    const existingTopping = await prisma.topping.findFirst({
-      where: {
-        name,
-      },
-    })
+    const toppingExists = await isExistingTopping(name)
 
     try {
-      if (!!existingTopping) {
+      if (!!toppingExists) {
         throw new Error(
           'Topping already exists. Cannot create duplicate toppings'
         )
       }
 
-      const topping = await prisma.topping.update({
-        where: { id },
-        data: { name },
-      })
+      const topping = await updateTopping({ id, name })
 
       res.status(200).json(topping)
     } catch (error) {
@@ -32,9 +25,7 @@ export default async function handle(req, res) {
   }
 
   if (req.method === 'DELETE') {
-    const topping = await prisma.topping.delete({
-      where: { id },
-    })
+    const topping = await deleteTopping(id)
 
     res.json(topping)
   }

@@ -1,4 +1,5 @@
 import prisma from '../../../lib/prisma'
+import { createPizza, getAllPizzas, isExistingPizza } from './db-functions'
 
 // GET /api/pizza
 // POST /api/pizza
@@ -6,39 +7,22 @@ export default async function handle(req, res) {
   const { name, toppings } = req.body
 
   if (req.method === 'GET') {
-    const pizzas = await prisma.pizza.findMany({
-      select: {
-        id: true,
-        name: true,
-        toppings: true,
-      },
-    })
+    const pizzas = await getAllPizzas()
 
     res.json({ pizzas })
   }
 
-  const existingPizza = await prisma.pizza.findFirst({
-    where: {
-      name,
-    },
-  })
+  const pizzaExists = await isExistingPizza(name)
 
   if (req.method === 'POST') {
     try {
-      if (!!existingPizza) {
+      if (!!pizzaExists) {
         throw new Error(
           `Pizza "${name}" already exists. Please input a unique pizza name.`
         )
       }
 
-      const result = await prisma.pizza.create({
-        data: { name, toppings },
-        select: {
-          id: true,
-          name: true,
-          toppings: true,
-        },
-      })
+      const result = await createPizza({ name, toppings })
 
       res.status(200).json(result)
     } catch (error) {

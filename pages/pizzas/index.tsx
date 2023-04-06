@@ -53,7 +53,7 @@ const PizzaList = () => {
                 </p>
                 <p className="truncate text-sm text-gray-500">
                   {pizza.toppings.length} topping
-                  {pizza.toppings.length > 1 ? 's' : null}
+                  {pizza.toppings.length !== 1 ? 's' : null}
                 </p>
               </div>
               <EditPizzaButton pizza={pizza} />

@@ -1,4 +1,4 @@
-import prisma from '../../../lib/prisma'
+import { deletePizza, updatePizza } from './db-functions'
 
 // PATCH /api/pizza/:id
 // DELETE /api/pizza/:id
@@ -8,10 +8,7 @@ export default async function handle(req, res) {
 
   if (req.method === 'PATCH') {
     try {
-      const pizza = await prisma.pizza.update({
-        where: { id },
-        data: { name, toppings },
-      })
+      const pizza = await updatePizza({ id, name, toppings })
 
       res.status(200).json(pizza)
     } catch (error) {
@@ -20,9 +17,7 @@ export default async function handle(req, res) {
   }
 
   if (req.method === 'DELETE') {
-    const pizza = await prisma.pizza.delete({
-      where: { id },
-    })
+    const pizza = await deletePizza(id)
 
     res.json(pizza)
   }
