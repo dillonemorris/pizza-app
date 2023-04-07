@@ -5,7 +5,7 @@ import { Dialog } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Modal } from '../../components'
 import { Pizza } from '../../components/types'
-import { CreatePizzaModal } from './CreatePizzaModal'
+import { CreatePizzaModal } from '../../components/CreatePizzaModal'
 
 export default function Pizzas() {
   const [isOpen, setIsOpen] = useState(false)
@@ -21,7 +21,6 @@ export default function Pizzas() {
       <div className="mt-16">
         <button
           onClick={() => setIsOpen(true)}
-          href="#"
           className="flex w-full items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold
                 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
         >

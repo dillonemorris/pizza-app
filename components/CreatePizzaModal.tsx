@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
 import { Dialog } from '@headlessui/react'
-import { Modal } from '../../components'
-import { Pizza } from '../../components/types'
+import { Modal } from './Modal'
+import { Pizza } from './types'
 
 type CreatePizzaModalProps = {
   isOpen: boolean
@@ -15,13 +15,18 @@ export const CreatePizzaModal = ({
   isOpen,
   onClose,
   isEditing = false,
-  initialPizza = {},
+  initialPizza = {
+    name: '',
+    id: '',
+    toppings: [],
+  },
 }: CreatePizzaModalProps) => {
   const pizza = {
-    name: initialPizza.name || '',
-    toppings: initialPizza.toppings || [],
-    id: initialPizza.id || '',
+    name: initialPizza?.name || '',
+    toppings: initialPizza?.toppings || [],
+    id: initialPizza?.id || '',
   }
+
   const { mutate } = useSWRConfig()
   const [name, setName] = useState(pizza.name)
   const [error, setError] = useState('')

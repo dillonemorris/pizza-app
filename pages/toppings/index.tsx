@@ -2,7 +2,7 @@ import Head from 'next/head'
 import useSWR, { useSWRConfig } from 'swr'
 import { PlusIcon } from '@heroicons/react/20/solid'
 import { useState } from 'react'
-import { ToppingListItem } from './ToppingListItem'
+import { ToppingListItem } from '../../components/ToppingListItem'
 
 export default function Toppings() {
   const { data, isLoading } = useSWR('/api/topping')
@@ -17,7 +17,7 @@ export default function Toppings() {
 
       <NewToppingInput />
 
-      {isLoading ? null : <ToppingList toppings={data.toppings} />}
+      {isLoading ? null : <ToppingList />}
     </div>
   )
 }

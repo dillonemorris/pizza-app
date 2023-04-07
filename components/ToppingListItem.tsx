@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useSWRConfig } from 'swr'
 import { Dialog } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import { Modal } from '../../components'
-import { Topping } from '../../components/types'
+import { Modal } from './Modal'
+import { Topping } from './types'
 
 type ToppingListItemProps = {
   topping: Topping
