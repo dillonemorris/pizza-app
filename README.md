@@ -43,3 +43,6 @@ const allToppings = await prisma.pizza.findMany()
 ```
 
 Prisma works with many db's, this app is hooked into a PostgreSQL instance hosted at [supabase](https://supabase.com/), which is a Firebase alternative.
+
+### Tailwind  
+All the styling is done with [TailwindCSS](https://tailwindcss.com/). I find tailwind to be the quickest way to make nice looking UI's.
