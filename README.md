@@ -1,6 +1,14 @@
 ## Deployed app
 https://pizza-app-sooty-beta.vercel.app/
 
+### Testing the requirements
+1. The link above should redirect you to the `/toppings` route. There should be some toppings pre-populated, feel free to delete or edit these.
+1. Create a new topping, it should populate in the list.
+1. At the `/pizzas` route, you should find a pre-popuated pizza or 2. Again, feel free to edit or delete these.
+1. Upon clicking the Create new pizza button, the create pizza modal should appear. Here, you'll see the list of toppings that were created on the toppings page. 
+1. Choose a name for your pizza and select the toppings you'd like it to include. Once you save, you should see your new pizza appear in the list.
+1. When you edit a pizza, it's toppings should be pre-selected. Change the name and/or toppings and save your changes.
+
 ## Running the app
 To run the development server:
 
