@@ -1,34 +1,32 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Deployed app
+https://pizza-app-sooty-beta.vercel.app/
 
-## Getting Started
-
-First, run the development server:
+## Running the app
+To run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the running app.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+To run tests:
+```bash
+yarn test
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Tech stack
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Next.js
+This app was built with [next.js](https://nextjs.org/). Next is a React framework. I chose next for this project because:
+1. Easy to create routes. Notice that in the pages directory there are `/toppings` and `/pizzas` sub-directories. These correspond to the actual routes in the app. Next auto-magically creates routes for each directory in `/pages`.
+1. Full stack capabilities with [API routes](https://nextjs.org/docs/api-routes/introduction). Next is a fullstack JS framework. There is another sub-directory in `/pages` called `/api`. This is where all of the server code resides, it is written in node. The pizza API is at `/api/pizza/index.ts` and topping API is at `/api/topping/index.ts`. Next then allows you to hit these API routes at `/api/pizza` and `api/topping`. See example here.
 
-## Learn More
+### Prisma / PostgreSQL DB
+On the DB side, this app is built with [Prisma](https://www.prisma.io/). Prisma allows you to model data in a [schema.prisma] file and then access it easily with something like:
+```js
+// get all toppings from db
+const allToppings = await prisma.pizza.findMany()
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Prisma works with many db's, this app is hooked into a PostgreSQL instance hosted at [supabase](https://supabase.com/), which is a Firebase alternative.
